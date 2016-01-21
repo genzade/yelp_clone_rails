@@ -1,4 +1,6 @@
 class RestaurantsController < ApplicationController
+  before_action :authenticate_user!, except: [:index, :show]
+
   def index
     @restaurants = Restaurant.all
   end
@@ -21,7 +23,9 @@ class RestaurantsController < ApplicationController
   end
 
   def restaurant_params
-    params.require(:restaurant).permit(:name)
+    new_params = params.require(:restaurant).permit(:name)
+    new_params[:user_id] = current_user.id
+    new_params
   end
 
   def edit
@@ -37,8 +41,12 @@ class RestaurantsController < ApplicationController
 
   def destroy
     @restaurant = Restaurant.find(params[:id])
-    @restaurant.destroy
-    flash[:notice]= "#{@restaurant.name} has been deleted"
+    if @restaurant.user_id == current_user.id
+      @restaurant.destroy
+      flash[:notice]= "#{@restaurant.name} has been deleted"
+    else
+      flash[:notice]= "You are not permitted to delete #{@restaurant.name}"
+    end
 
     redirect_to restaurants_path
   end

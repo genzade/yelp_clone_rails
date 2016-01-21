@@ -57,6 +57,36 @@ feature "Restaurants" do
           end
         end
       end
+      
+      context "lets user delete restaurants" do
+        scenario "removes a restaurant when user clicks a delete link" do
+          visit "/restaurants"
+          click_link "Add a restaurant"
+          fill_in "Name", with: "Nandos"
+          click_button "Create Restaurant"
+          click_link "Delete Nandos"
+          expect(page).not_to have_css "h2", text: "Nandos"
+          expect(page).to have_content "Nandos has been deleted"
+        end
+      end
+
+      context "another user deletes restaurant" do
+        scenario "user can only delete a restaurant that they have created" do
+          click_link "Add a restaurant"
+          fill_in "Name", with: "Big fat noodles"
+          click_button "Create Restaurant"
+          click_link "Sign out"
+          click_link "Sign up"
+          fill_in "Email", with: "maxeisenhardt@brotherhood.com"
+          fill_in "Password", with: "weWillRiseAgain45"
+          fill_in "Password confirmation", with: "weWillRiseAgain45"
+          click_button "Sign up"
+          visit "/"
+          click_link "Delete Big fat noodles"
+          expect(page).not_to have_content("Big fat noodles has been deleted")
+          expect(page).to have_content("You are not permitted to delete Big fat noodles") 
+        end
+      end
     end
 
     context "restaurants have been added" do
@@ -86,23 +116,6 @@ feature "Restaurants" do
         end
       end
 
-      context "lets user delete restaurants" do
-        scenario "removes a restaurant when user clicks a delete link" do
-          visit "/restaurants"
-          click_link "Delete Nandos"
-          expect(page).not_to have_css "h2", text: "Nandos"
-          expect(page).to have_content "Nandos has been deleted"
-        end
-
-        # scenario "user can only delete a restaurant that they have created" do
-        #   visit "/"
-        #   click_link "Sign up"
-        #   fill_in "Email", with: "maxeisenhardt@brotherhood.com"
-        #   fill_in "Password", with: "weWillRiseAgain45"
-        #   fill_in "Password confirmation", with: "weWillRiseAgain45"
-        #   click_button "Sign up"
-        # end
-      end
 
       context "prevents restaurant duplication" do
         scenario "restaurants added must be unique" do
