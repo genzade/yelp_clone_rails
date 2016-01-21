@@ -18,14 +18,7 @@ feature "Restaurants" do
   # Users can delete only their own reviews
 
   context "user signs up and logs in" do
-    before do
-      visit "/"
-      click_link "Sign up"
-      fill_in "Email", with: "charlesxavier@xmen.com"
-      fill_in "Password", with: "istituteForGiftedYougnsters"
-      fill_in "Password confirmation", with: "istituteForGiftedYougnsters"
-      click_button "Sign up"
-    end
+    before { xavier_signs_up }
 
     context "no restaurants have been added" do
       scenario "should display a prompt to add a restaurant" do
@@ -60,10 +53,7 @@ feature "Restaurants" do
       
       context "lets user delete restaurants" do
         scenario "removes a restaurant when user clicks a delete link" do
-          visit "/restaurants"
-          click_link "Add a restaurant"
-          fill_in "Name", with: "Nandos"
-          click_button "Create Restaurant"
+          add_nandos
           click_link "Delete Nandos"
           expect(page).not_to have_css "h2", text: "Nandos"
           expect(page).to have_content "Nandos has been deleted"
@@ -72,19 +62,23 @@ feature "Restaurants" do
 
       context "another user deletes restaurant" do
         scenario "user can only delete a restaurant that they have created" do
-          click_link "Add a restaurant"
-          fill_in "Name", with: "Big fat noodles"
-          click_button "Create Restaurant"
+          add_nandos
           click_link "Sign out"
-          click_link "Sign up"
-          fill_in "Email", with: "maxeisenhardt@brotherhood.com"
-          fill_in "Password", with: "weWillRiseAgain45"
-          fill_in "Password confirmation", with: "weWillRiseAgain45"
-          click_button "Sign up"
+          magneto_signs_up
           visit "/"
-          click_link "Delete Big fat noodles"
-          expect(page).not_to have_content("Big fat noodles has been deleted")
-          expect(page).to have_content("You are not permitted to delete Big fat noodles") 
+          click_link "Delete Nandos"
+          expect(page).not_to have_content("Nandos has been deleted")
+          expect(page).to have_content("You are not permitted to delete Nandos") 
+        end
+      end
+
+      context "another user edit restaurant" do
+        scenario "user can only edit a restaurant that they have created" do
+          add_nandos
+          click_link "Sign out"
+          magneto_signs_up
+          click_link "Edit Nandos"
+          expect(page).to have_content("You are not permitted to edit Nandos") 
         end
       end
     end
@@ -119,10 +113,7 @@ feature "Restaurants" do
 
       context "prevents restaurant duplication" do
         scenario "restaurants added must be unique" do
-          visit "/restaurants"
-          click_link "Add a restaurant"
-          fill_in "Name", with: "Nandos"
-          click_button "Create Restaurant"
+         add_nandos
           expect(page).to have_content "error"
         end
       end
