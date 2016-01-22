@@ -38,6 +38,3 @@ def add_review_again
   select "5", from: "Rating"
   click_button "Leave Review"
 end
-
-def leave_review
-end
