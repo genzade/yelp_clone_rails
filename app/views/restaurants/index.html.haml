@@ -11,13 +11,12 @@
     - if restaurant.reviews.any?
       %ul
         - restaurant.reviews.each do |review|
-          %li
-            = review.opinion
-            %strong= review.rating
-            \/5
-            %p #{pluralize review.endorsements.count, "endorsement"}
-            %p= link_to "Endorse review", review_endorsements_path(review), method: :post
-            %p= link_to "Delete review", review_path(review), method: :delete
+          
+          #{review.opinion} Average rating: #{star_rating(restaurant.average_rating)}
+          = link_to "Endorse review", review_endorsements_path(review), class: 'endorsements-link'
+          %span.endorsements_count= review.endorsements.count 
+          = 'endorsement'.pluralize review.endorsements.count
+          %p= link_to "Delete review", review_path(review), method: :delete
     - else
       %p No reviews
 - else
