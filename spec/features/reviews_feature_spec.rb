@@ -29,4 +29,14 @@ feature "reviewing" do
     click_link "Delete review"
     expect(page).to have_content "You are not permitted to delete review"
   end
+
+  scenario 'displays an average rating for the reviews' do
+    expect(page).to have_content 'No reviews'
+    add_review_first
+    expect(page).to have_content 'Average rating: 3'
+    click_link 'Sign out'
+    magneto_signs_up
+    add_review_again
+    expect(page).to have_content 'Average rating: 4'
+  end
 end
