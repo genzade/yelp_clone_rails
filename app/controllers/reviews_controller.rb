@@ -6,8 +6,12 @@ class ReviewsController < ApplicationController
 
   def create
     @restaurant = Restaurant.find(params[:restaurant_id])
-    @restaurant.reviews.create(review_params)
+    @review = @restaurant.reviews.new(review_params)
 
+    unless @review.save
+      flash[:notice]= "You are not permitted to review #{@restaurant.name} again"
+    end
+  
     redirect_to restaurants_path
   end
 
@@ -29,3 +33,11 @@ class ReviewsController < ApplicationController
     redirect_to restaurants_path
   end
 end
+# def create
+#    @restaurant = Restaurant.find(params[:restaurant_id])
+#    @review = @restaurant.reviews.new(review_params)
+#    unless @review.save
+#      flash[:notice] = 'You cannot review a restaurant more than once'
+#    end
+#    redirect_to restaurants_path
+#  end

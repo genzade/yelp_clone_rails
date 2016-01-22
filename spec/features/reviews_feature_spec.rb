@@ -10,6 +10,14 @@ feature "reviewing" do
     expect(page).to have_content "I don't even like chicken"
   end
 
+  scenario "allows users to review a restaurant once only" do
+    add_review_first
+    expect(page).to have_content "I don't even like chicken"
+    add_review_again
+    expect(page).not_to have_content "I do actually like chicken"
+    expect(page).to have_content "You are not permitted to review Nandos again"
+  end
+
   scenario "delete only review they have created" do
     add_review_first
     expect(page).to have_content "I don't even like chicken"
