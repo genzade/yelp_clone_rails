@@ -42,7 +42,6 @@ describe Restaurant, type: :model do
 
     context 'multiple reviews' do
       it "returns the average ratings" do
-        p magneto
         professorsJoint = professor_X.restaurants.create(name: "TheProfessor'sJoint")
         professorsJoint.reviews.create(rating: 5)
         professorsJoint.reviews.new(rating: 1).save(validate: false)

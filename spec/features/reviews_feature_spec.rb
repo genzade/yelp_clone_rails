@@ -33,10 +33,10 @@ feature "reviewing" do
   scenario 'displays an average rating for the reviews' do
     expect(page).to have_content 'No reviews'
     add_review_first
-    expect(page).to have_content 'Average rating: 3'
+    expect(page).to have_content 'Average rating: ★★★☆☆'
     click_link 'Sign out'
     magneto_signs_up
     add_review_again
-    expect(page).to have_content 'Average rating: 4'
+    expect(page).to have_content 'Average rating: ★★★★☆'
   end
 end
